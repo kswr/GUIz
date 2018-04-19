@@ -30,7 +30,7 @@ public class Customer {
         this.shoppingCart.addToShoppingCart(flower);
     }
 
-    public void pay(boolean card) {
+    public void pay(boolean cash) {
         for (int i = 0; i<shoppingCart.getShoppingCart().size();i++) {
             String name = shoppingCart.getShoppingCart().get(i).getName();
             double price = pl.getPrice(shoppingCart.getShoppingCart().get(i));
@@ -40,17 +40,27 @@ public class Customer {
             } else {
                 int amount = shoppingCart.getShoppingCart().get(i).getAmount();
                 double money = price * amount;
-                if (!card) {
-                    this.money -= (money*1.23);
+                if (!cash) {
+                    if ((this.money - (money*1.01))>0){
+                        this.money -= (money*1.01);
+                    } else {
+                       shoppingCart.getShoppingCart().remove(i);
+                       i--;
+                    }
                 } else {
-                    this.money -= money;
+                    if ((this.money - money)>0){
+                        this.money -= money;
+                    } else {
+                        shoppingCart.getShoppingCart().remove(i);
+                        i--;
+                    }
                 }
             }
         }
     }
 
     public void pack(Box box) {
-       for (int i = 0; i < box.getBox().size(); ){
+       for (int i = box.getBox().size()-1; i > -1; i--){
            shoppingCart.getShoppingCart().remove(box.getBox().get(i));
        }
     }

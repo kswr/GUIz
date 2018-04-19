@@ -12,6 +12,7 @@ public class Box {
     }
 
     public Box(Customer customer) {
+//        this.box = new ArrayList<Flower>();
         this.box.addAll(customer.getShoppingCart().getShoppingCart());
         this.owner = customer.getName();
     }
