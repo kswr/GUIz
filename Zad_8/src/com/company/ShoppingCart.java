@@ -4,16 +4,18 @@ import java.util.ArrayList;
 
 
 public class ShoppingCart{
-    String owner = "";
+    String owner;
     private ArrayList<Flower> shoppingCart = new ArrayList<>();
     PriceList pl = PriceList.getInstance();
 
     public ShoppingCart() {
+        this("");
     }
 
     public ShoppingCart(String owner) {
         this.owner = owner;
     }
+
 
     public void addToShoppingCart(Flower flower) {
         shoppingCart.add(flower);
