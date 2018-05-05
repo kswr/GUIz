@@ -1,40 +1,48 @@
 package com.company;
 
+import static com.company.TaskState.READY;
+import static com.company.TaskState.RUNNING;
+import static com.company.TaskState.ABORTED;
+import static com.company.TaskState.CREATED;
+
+enum TaskState {RUNNING, CREATED, ABORTED, READY};
 
 public class StringTask implements Runnable{
     private String string;
     private int reps;
     private String concatString;
     private Thread thread;
-    private TaskState taskState;
+    private TaskState state;
 
-    public enum state {RUNNING, CREATED, ABORTED, READY}
 
     public void start() {
         this.thread = new Thread(this);
+        this.state = RUNNING;
+        System.out.println("Task is now running");
         thread.start();
-        this.taskState.setState(state.RUNNING);
     }
 
     public String getResult() {
-        String tempString = "";
-        if (this.getState().equals("READY")) {
-           tempString = this.getConcatString();
-            System.out.println("Task finished, returning product");
-        } else {
-            System.out.println("Task not finished, can't return product");
-        }
-        return tempString;
+//        String tempString = "";
+//        if (this.getState()==READY) {
+//           tempString = this.getConcatString();
+//            System.out.println("Task finished, returning product");
+//        } else {
+//            System.out.println("Task not finished, can't return product");
+//        }
+//        return tempString;
+        return this.getConcat();
     }
 
     public void abort() {
         this.thread.interrupt();
+        this.state = ABORTED;
     }
 
     public boolean isDone() {
         boolean isDone;
-        String state = this.getState().toString();
-        if (state.equals("READY") || state.equals("ABORTED")) {
+        TaskState state = this.getState();
+        if (state == READY|| state == ABORTED) {
            isDone = true;
         } else {
             isDone = false;
@@ -46,81 +54,49 @@ public class StringTask implements Runnable{
         this.string = string;
         this.reps = reps;
         this.concatString = "";
-        this.taskState = new TaskState(state.RUNNING);
+        this.state = CREATED;
     }
 
     public TaskState getState() {
-       return getTaskState();
-    }
-
-    public String getString() {
-        return string;
-    }
-
-    public void setString(String string) {
-        this.string = string;
-    }
-
-    public int getReps() {
-        return reps;
-    }
-
-    public void setReps(int reps) {
-        this.reps = reps;
-    }
-
-    public String getConcatString() {
-        return concatString;
-    }
-
-    public void setConcatString(String concatString) {
-        this.concatString = concatString;
+        return state;
     }
 
     public Thread getThread() {
         return thread;
     }
 
-    public TaskState getTaskState() {
-        return taskState;
+    public void setState(TaskState state) {
+        this.state = state;
     }
 
-    static class TaskState {
-//        enum state {CREATED, RUNNING, ABORTED, READY}
-//        private String state;
-        private state state;
+    public String getConcat() {
+        return concatString;
+    }
 
-        public TaskState(state state) {
-            this.state = state;
-        }
-
-        public void setState(state state) {
-            this.state = state;
-        }
-
-//        @Override
-//        public String toString() {
-//            return state;
-//        }
+    public String getTxt() {
+        return string;
     }
 
     @Override
     public void run() {
         String reversedString = "";
+        String info = "Task finished succesfully";
         for (int i =1; i <= this.string.length(); i++){
             reversedString = reversedString + this.string.charAt(this.string.length()-i);
         }
         for (int i = 0; i < this.reps; i++) {
             this.concatString = (this.concatString + reversedString);
             if(this.thread.isInterrupted()) {
-                System.out.println("Task has been aborted!");
-                this.taskState.setState("ABORTED");
+                info = "Task has been aborted";
+                this.state = ABORTED;
                 break;
-            } else {
-                System.out.println("Task finished succesfully");
-                this.taskState.setState("READY");
             }
         }
+        if (this.state != ABORTED){
+            this.state = READY;
+        }
+//        System.out.println(info);
+//        this.state = READY;
     }
 }
 
