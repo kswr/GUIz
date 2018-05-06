@@ -23,14 +23,6 @@ public class StringTask implements Runnable{
     }
 
     public String getResult() {
-//        String tempString = "";
-//        if (this.getState()==READY) {
-//           tempString = this.getConcatString();
-//            System.out.println("Task finished, returning product");
-//        } else {
-//            System.out.println("Task not finished, can't return product");
-//        }
-//        return tempString;
         return this.getConcat();
     }
 
@@ -80,14 +72,14 @@ public class StringTask implements Runnable{
     @Override
     public void run() {
         String reversedString = "";
-        String info = "Task finished succesfully";
+//        String info = "Task finished succesfully";
         for (int i =1; i <= this.string.length(); i++){
             reversedString = reversedString + this.string.charAt(this.string.length()-i);
         }
         for (int i = 0; i < this.reps; i++) {
             this.concatString = (this.concatString + reversedString);
             if(this.thread.isInterrupted()) {
-                info = "Task has been aborted";
+//                info = "Task has been aborted";
                 this.state = ABORTED;
                 break;
             }
@@ -95,8 +87,6 @@ public class StringTask implements Runnable{
         if (this.state != ABORTED){
             this.state = READY;
         }
-//        System.out.println(info);
-//        this.state = READY;
     }
 }
 
