@@ -1,7 +1,0 @@
-package com.company;
-
-public class Lilac extends Flower{
-    public Lilac(int amount) {
-        super("bez", "purpurowy", amount);
-    }
-}
