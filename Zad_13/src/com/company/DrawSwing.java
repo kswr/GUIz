@@ -114,13 +114,13 @@ class MyPanel
             int counter = 0;
             if (dims.length == 3) {
                 g.setColor(colors.get(arguments.indexOf(dims)));
-                g.fillOval(dims[0]-dims[2], dims[1]-dims[2], dims[2], dims[2]);
+                g.drawOval(dims[0]-dims[2], dims[1]-dims[2], dims[2], dims[2]);
             }
             if (dims.length == 4) {
                 g.setColor(colors.get(arguments.indexOf(dims)));
                 int[] xp = {dims[2], dims[2], dims[0], dims[0]};
                 int[] xy = {dims[3], dims[1], dims[1], dims[3]};
-                g.fillPolygon(xp, xy, 4);
+                g.drawPolygon(xp, xy, 4);
             }
             counter++;
         }
