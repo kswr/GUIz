@@ -15,7 +15,6 @@ public class DrawSwing {
     public static void main(String[] args)
     {
         new DrawSwing();
-
     }
 
     public DrawSwing()
@@ -51,8 +50,20 @@ public class DrawSwing {
             colorTable.add(colorRandomizer());
         }
 
+        ArrayList<String> parameters = new ArrayList<>();
+        try {
+            parameters = reader("data.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<int[]> arguments = new ArrayList<>();
+        for (String str : parameters) {
+            arguments.add(intConverter(str));
+        }
+
         // utworzenie obszaru rysowania - pulpitu
-        MyPanel p = new MyPanel(colorTable);
+        MyPanel p = new MyPanel(colorTable, arguments);
 
         // wymiana domyĹlnego pulpitu na wĹasny
         jf.setContentPane(p);
@@ -69,63 +80,6 @@ public class DrawSwing {
         Color c=new Color(r.nextInt(256),r.nextInt(256),r.nextInt(256),r.nextInt(256));
         return c;
     }
-}
-
-class MyPanel
-        extends JPanel {
-    private ArrayList<Color> colors;
-
-    // konstruktor
-    MyPanel(ArrayList<Color> colors)
-    {
-        // ustalenie rozmiarĂłw poczÄtkowych
-        setPreferredSize(new Dimension(400,400));
-        this.colors = colors;
-    }
-
-
-    public void paintComponent(Graphics g)
-    {
-        // musi byÄ jako pierwsza instrukcja
-        super.paintComponent(g);
-
-        // pobranie aktualnych rozmiarĂłw
-        int width = getWidth();
-        int height = getHeight();
-        int xcentre = width/2;
-        int ycentre = height/2;
-
-        ArrayList<String> parameters = new ArrayList<>();
-        try {
-            parameters = reader("data.txt");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        ArrayList<int[]> arguments = new ArrayList<>();
-        for (String str : parameters) {
-            arguments.add(intConverter(str));
-        }
-
-        g.setColor(Color.red);
-        g.setFont(new Font("Dialog", Font.BOLD|Font.ITALIC, 30));
-
-        for (int[] dims : arguments) {
-            int counter = 0;
-            if (dims.length == 3) {
-                g.setColor(colors.get(arguments.indexOf(dims)));
-                g.drawOval(dims[0]-dims[2], dims[1]-dims[2], dims[2], dims[2]);
-            }
-            if (dims.length == 4) {
-                g.setColor(colors.get(arguments.indexOf(dims)));
-                int[] xp = {dims[2], dims[2], dims[0], dims[0]};
-                int[] xy = {dims[3], dims[1], dims[1], dims[3]};
-                g.drawPolygon(xp, xy, 4);
-            }
-            counter++;
-        }
-    }
-
     public static ArrayList<String> reader(String filename) throws FileNotFoundException {
         ArrayList<String> tempArray = new ArrayList<>();
         File file = new File("./data/" + filename);
@@ -161,4 +115,38 @@ class MyPanel
         }
         return integers;
     }
+}
+
+class MyPanel
+        extends JPanel {
+    private ArrayList<Color> colors;
+    private ArrayList<int[]> arguments;
+
+    MyPanel(ArrayList<Color> colors, ArrayList<int[]> arguments)
+    {
+        // ustalenie rozmiarĂłw poczÄtkowych
+        setPreferredSize(new Dimension(400,400));
+        this.colors = colors;
+        this.arguments = arguments;
+    }
+
+
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+
+        for (int[] dims : arguments) {
+            if (dims.length == 3) {
+                g.setColor(colors.get(arguments.indexOf(dims)));
+                g.drawOval(dims[0]-dims[2], dims[1]-dims[2], dims[2], dims[2]);
+            }
+            if (dims.length == 4) {
+                g.setColor(colors.get(arguments.indexOf(dims)));
+                int[] xp = {dims[2], dims[2], dims[0], dims[0]};
+                int[] xy = {dims[3], dims[1], dims[1], dims[3]};
+                g.drawPolygon(xp, xy, 4);
+            }
+        }
+    }
+
 }
