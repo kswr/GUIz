@@ -1,15 +1,21 @@
+import org.w3c.dom.events.Event;
+
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.plaf.IconUIResource;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.*;
 
 public class SimpleEditor extends JFrame {
     public SimpleEditor() {
         initUI();
     }
+
+    String filename = "";
 
     private void initUI() {
 
@@ -39,17 +45,20 @@ public class SimpleEditor extends JFrame {
         JMenu backMe = new JMenu("Background");
         JMenu fontMe = new JMenu("Font size");
         JMenuItem openMi = new JMenuItem("Open");
+        openMi.setMnemonic(KeyEvent.VK_O);
+//        openMi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.CTRL_MASK));
         openMi.addActionListener((ActionEvent event) -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setCurrentDirectory(workingDirectory);
             chooser.showOpenDialog(null);
             try {
                 File f = chooser.getSelectedFile();
-                String filename = f.getAbsolutePath();
+                filename = f.getAbsolutePath();
                 FileReader reader = new FileReader(filename);
                 BufferedReader br = new BufferedReader(reader);
                 textPane.read(br,null);
                 br.close();
+                setTitle(filename);
                 textPane.requestFocus();
             } catch (Exception e) {
 
@@ -57,6 +66,17 @@ public class SimpleEditor extends JFrame {
         });
 
         JMenuItem saveMi = new JMenuItem("Save");
+        saveMi.addActionListener((ActionEvent event) -> {
+            try {
+                FileWriter writer = new FileWriter(filename);
+                BufferedWriter bw = new BufferedWriter(writer);
+                bw.write(textPane.getText());
+                bw.close();
+                textPane.requestFocus();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "File does not exist");
+            }
+        });
         JMenuItem saveasMi = new JMenuItem("Save as...");
         saveasMi.addActionListener((ActionEvent event) -> {
             JFileChooser chooser = new JFileChooser();
@@ -64,16 +84,17 @@ public class SimpleEditor extends JFrame {
             chooser.showSaveDialog(null);
             try {
                 File f = chooser.getSelectedFile();
-                String filename = f.getAbsolutePath();
+                filename = f.getAbsolutePath();
                 FileWriter writer = new FileWriter(filename);
                 BufferedWriter bw = new BufferedWriter(writer);
 //                f.setWritable(true);
                 bw.write(textPane.getText());
+                setTitle(filename);
                 bw.close();
                 textPane.requestFocus();
 
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "File not found");
+                JOptionPane.showMessageDialog(null, "File does not exist");
             }
         });
 
@@ -96,12 +117,12 @@ public class SimpleEditor extends JFrame {
         for (int i = 0; i < pts.length; i++) {
             int size = pts[i];
             fontMe.getItem(i).addActionListener((ActionEvent event) -> {
-                textPane.setFont(new Font(Font.SANS_SERIF, 0, size));
+                    textPane.setFont(new Font(Font.SANS_SERIF, 0, size));
             });
         }
 
         for (String[] str: colors) {
-            backMe.add(new JMenuItem(str[0]));
+            backMe.add(new JMenuItem(str[0], new roundIcon(Color.decode(str[1]))));
         }
 
         for (int i = 0; i < backMe.getItemCount(); i++) {
@@ -111,14 +132,19 @@ public class SimpleEditor extends JFrame {
             });
         }
 
-        for (String str[]: colors) {
-            foreMe.add(new JMenuItem(str[0]));
+        for (String[] str: colors) {
+            foreMe.add(new JMenuItem(str[0], new roundIcon(Color.decode(str[1]))));
         }
+//        for (String str[]: colors) {
+//            foreMe.add(new JMenuItem(str[0]));
+//        }
 
         for (int i = 0; i < foreMe.getItemCount(); i++) {
             Color tempColor = Color.decode(colors[i][1]);
             foreMe.getItem(i).addActionListener((ActionEvent event) -> {
-                textPane.setForeground(tempColor);
+                if (textPane.getText().length()>0) {
+                    textPane.setForeground(tempColor);
+                }
             });
         }
 
@@ -141,7 +167,7 @@ public class SimpleEditor extends JFrame {
 
         add(spane);
 
-        setTitle("Prosty edytor");
+        setTitle("Bez tytułu");
         setSize(720,500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -158,10 +184,47 @@ public class SimpleEditor extends JFrame {
         return item;
     }
 
+
+    @Override
+    public void setTitle(String title) {
+        super.setTitle("Prosty edytor - " + title);
+    }
+
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             SimpleEditor se = new SimpleEditor();
             se.setVisible(true);
         });
+    }
+
+    public class roundIcon implements Icon {
+        private Color color;
+
+        public roundIcon(Color color) {
+            this.color = color;
+        }
+
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            g.setColor(color);
+            g.fillOval(8,4,10,10);
+            g.setColor(Color.BLACK);
+
+        }
+
+        @Override
+        public int getIconWidth() {
+            return 0;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return 0;
+        }
+    }
+
+    public class JMenuItemNew extends JMenuItem {
+
     }
 }
