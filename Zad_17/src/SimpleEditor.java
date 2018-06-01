@@ -1,14 +1,13 @@
-import org.w3c.dom.events.Event;
-
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.plaf.IconUIResource;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.*;
+
+import static java.awt.event.ActionEvent.CTRL_MASK;
+import static java.awt.event.ActionEvent.SHIFT_MASK;
 
 public class SimpleEditor extends JFrame {
     public SimpleEditor() {
@@ -37,16 +36,15 @@ public class SimpleEditor extends JFrame {
         int[] pts = {8, 10, 12, 14, 16, 20, 22, 24};
 
         JMenuBar menuBar = new JMenuBar();
-        JMenu fileMe = new JMenu("File");
-        JMenu editMe = new JMenu("Edit");
-        JMenu optionsMe = new JMenu("Options");
-        JMenu adressMe = new JMenu("Adresy");
-        JMenu foreMe = new JMenu("Foreground");
-        JMenu backMe = new JMenu("Background");
-        JMenu fontMe = new JMenu("Font size");
-        JMenuItem openMi = new JMenuItem("Open");
-        openMi.setMnemonic(KeyEvent.VK_O);
-//        openMi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.CTRL_MASK));
+        JMenuNew fileMe = new JMenuNew("File", KeyEvent.VK_F);
+        JMenuNew editMe = new JMenuNew("Edit", KeyEvent.VK_E);
+        JMenuNew optionsMe = new JMenuNew("Options", KeyEvent.VK_O);
+        JMenuNew adressMe = new JMenuNew("Adresy", KeyEvent.VK_A);
+        JMenuNew foreMe = new JMenuNew("Foreground", KeyEvent.VK_R);
+        JMenuNew backMe = new JMenuNew("Background", KeyEvent.VK_B);
+        JMenuNew fontMe = new JMenuNew("Font size", KeyEvent.VK_N);
+
+        JMenuItemNew openMi = new JMenuItemNew("Open", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_O, CTRL_MASK));
         openMi.addActionListener((ActionEvent event) -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setCurrentDirectory(workingDirectory);
@@ -65,7 +63,7 @@ public class SimpleEditor extends JFrame {
             }
         });
 
-        JMenuItem saveMi = new JMenuItem("Save");
+        JMenuItemNew saveMi = new JMenuItemNew("Save", KeyEvent.VK_S, KeyStroke.getKeyStroke(KeyEvent.VK_S, CTRL_MASK));
         saveMi.addActionListener((ActionEvent event) -> {
             try {
                 FileWriter writer = new FileWriter(filename);
@@ -77,7 +75,7 @@ public class SimpleEditor extends JFrame {
                 JOptionPane.showMessageDialog(null, "File does not exist");
             }
         });
-        JMenuItem saveasMi = new JMenuItem("Save as...");
+        JMenuItemNew saveasMi = new JMenuItemNew("Save as...", KeyEvent.VK_A, KeyStroke.getKeyStroke(KeyEvent.VK_A, CTRL_MASK));
         saveasMi.addActionListener((ActionEvent event) -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setCurrentDirectory(workingDirectory);
@@ -93,21 +91,21 @@ public class SimpleEditor extends JFrame {
                 bw.close();
                 textPane.requestFocus();
 
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "File does not exist");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "File not saved");
             }
         });
 
-        JMenuItem exitMi = new JMenuItem("Exit");
+        JMenuItemNew exitMi =new JMenuItemNew("Exit", KeyEvent.VK_X, KeyStroke.getKeyStroke(KeyEvent.VK_X, CTRL_MASK));
         exitMi.addActionListener((ActionEvent event) -> {
             System.exit(0);
         });
 
-        JMenuItem workMi = new JMenuItem("Praca");
+        JMenuItemNew workMi = new JMenuItemNew("Praca", KeyEvent.VK_P, KeyStroke.getKeyStroke(KeyEvent.VK_P, CTRL_MASK | SHIFT_MASK));
         insertText(workMi, "Miasteczko Orange, Aleje Jerozolimskie 160, 02-326 Warszawa", textPane);
-        JMenuItem schoolMi = new JMenuItem("Szkoła");
+        JMenuItemNew schoolMi = new JMenuItemNew("Szkoła", KeyEvent.VK_S, KeyStroke.getKeyStroke(KeyEvent.VK_S, CTRL_MASK | SHIFT_MASK));
         insertText(schoolMi, "Polsko-Japońska Akademia Technik Komputerowych, Koszykowa 86, 02-008 Warszawa", textPane);
-        JMenuItem homeMi = new JMenuItem("Dom");
+        JMenuItemNew homeMi = new JMenuItemNew("Dom", KeyEvent.VK_D, KeyStroke.getKeyStroke(KeyEvent.VK_D, CTRL_MASK | SHIFT_MASK));
         insertText(homeMi, "Mahatmy Gandhiego 68, 02-352 Warszawa", textPane);
 
         for (int i: pts) {
@@ -225,6 +223,16 @@ public class SimpleEditor extends JFrame {
     }
 
     public class JMenuItemNew extends JMenuItem {
+        public JMenuItemNew(String text, int mnemonic, KeyStroke accelerator) {
+            super(text, mnemonic);
+            setAccelerator(accelerator);
+        }
+    }
 
+    public class JMenuNew extends JMenu {
+        public JMenuNew(String s, int mnemonic) {
+            super(s);
+            setMnemonic(mnemonic);
+        }
     }
 }
