@@ -18,23 +18,31 @@ public class SimpleEditor extends JFrame {
 
     private void initUI() {
 
+        // getting current directory
         File workingDirectory = new File(System.getProperty("user.dir"));
 
+        // creating JTextPane for editing text and wraping it in JScrollPane
         JTextPane textPane = new JTextPane();
         JScrollPane spane = new JScrollPane(textPane);
+        // removin border from JScrollPane
         spane.setBorder(null);
 
+        // settings for JTextPane - editable and taking text
         textPane.setContentType("text");
         textPane.setEditable(true);
 
+        // produce border
         Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
 
+        // apply border to MenuItems and Menus (J...)
         UIManager.put("MenuItem.border", raisedBevelBorder);
         UIManager.put("Menu.border", raisedBevelBorder);
 
+        // arrays of colors with codes and sizes of letters
         String[][] colors = {{"Blue","#0000FF"}, {"Yellow","#FFFF00"}, {"Orange","#FFBB33"}, {"Red","#FF3333"}, {"White","#FFFFFF"}, {"Black","#000000"}, {"Green","#58FC37"}};
         int[] pts = {8, 10, 12, 14, 16, 20, 22, 24};
 
+        // creating menuBar with Menus and MenuItems, adding mnemonics
         JMenuBar menuBar = new JMenuBar();
         JMenuNew fileMe = new JMenuNew("File", KeyEvent.VK_F);
         JMenuNew editMe = new JMenuNew("Edit", KeyEvent.VK_E);
@@ -44,11 +52,15 @@ public class SimpleEditor extends JFrame {
         JMenuNew backMe = new JMenuNew("Background", KeyEvent.VK_B);
         JMenuNew fontMe = new JMenuNew("Font size", KeyEvent.VK_N);
 
+        // MenuItem Open with mnemonic and accelerator (custom class)
         JMenuItemNew openMi = new JMenuItemNew("Open", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_O, CTRL_MASK));
+
+        // creating actionListener
         openMi.addActionListener((ActionEvent event) -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setCurrentDirectory(workingDirectory);
             chooser.showOpenDialog(null);
+            // exception for cancelled window
             try {
                 File f = chooser.getSelectedFile();
                 filename = f.getAbsolutePath();
@@ -63,8 +75,11 @@ public class SimpleEditor extends JFrame {
             }
         });
 
+        // MenuItem Save with mnemonic and accelerator (custom class)
         JMenuItemNew saveMi = new JMenuItemNew("Save", KeyEvent.VK_S, KeyStroke.getKeyStroke(KeyEvent.VK_S, CTRL_MASK));
+        // creating actionListener
         saveMi.addActionListener((ActionEvent event) -> {
+            // excepton for non-existing file
             try {
                 FileWriter writer = new FileWriter(filename);
                 BufferedWriter bw = new BufferedWriter(writer);
@@ -75,8 +90,12 @@ public class SimpleEditor extends JFrame {
                 JOptionPane.showMessageDialog(null, "File does not exist");
             }
         });
+
+        // MenuItem SaveAs with mnemonic and accelerator (custom class)
         JMenuItemNew saveasMi = new JMenuItemNew("Save as...", KeyEvent.VK_A, KeyStroke.getKeyStroke(KeyEvent.VK_A, CTRL_MASK));
+        // creating actionListener
         saveasMi.addActionListener((ActionEvent event) -> {
+            // exception for cancelled window
             JFileChooser chooser = new JFileChooser();
             chooser.setCurrentDirectory(workingDirectory);
             chooser.showSaveDialog(null);
@@ -96,11 +115,14 @@ public class SimpleEditor extends JFrame {
             }
         });
 
+        // MenuItem Exit with mnemonic and accelerator (custom class)
         JMenuItemNew exitMi =new JMenuItemNew("Exit", KeyEvent.VK_X, KeyStroke.getKeyStroke(KeyEvent.VK_X, CTRL_MASK));
+        // creating actionListener
         exitMi.addActionListener((ActionEvent event) -> {
             System.exit(0);
         });
 
+        // buttons for inserting text with adresses
         JMenuItemNew workMi = new JMenuItemNew("Praca", KeyEvent.VK_P, KeyStroke.getKeyStroke(KeyEvent.VK_P, CTRL_MASK | SHIFT_MASK));
         insertText(workMi, "Miasteczko Orange, Aleje Jerozolimskie 160, 02-326 Warszawa", textPane);
         JMenuItemNew schoolMi = new JMenuItemNew("Szkoła", KeyEvent.VK_S, KeyStroke.getKeyStroke(KeyEvent.VK_S, CTRL_MASK | SHIFT_MASK));
@@ -108,10 +130,12 @@ public class SimpleEditor extends JFrame {
         JMenuItemNew homeMi = new JMenuItemNew("Dom", KeyEvent.VK_D, KeyStroke.getKeyStroke(KeyEvent.VK_D, CTRL_MASK | SHIFT_MASK));
         insertText(homeMi, "Mahatmy Gandhiego 68, 02-352 Warszawa", textPane);
 
+        // adding buttons for text sizes
         for (int i: pts) {
             fontMe.add(new JMenuItem(String.valueOf(i) + " pts"));
         }
 
+        // adding action listener for above
         for (int i = 0; i < pts.length; i++) {
             int size = pts[i];
             fontMe.getItem(i).addActionListener((ActionEvent event) -> {
@@ -119,10 +143,13 @@ public class SimpleEditor extends JFrame {
             });
         }
 
+        // Background
+        // adding buttons for colors with icons (custom class roundIcon)
         for (String[] str: colors) {
             backMe.add(new JMenuItem(str[0], new roundIcon(Color.decode(str[1]))));
         }
 
+        // adding action listener for above
         for (int i = 0; i < backMe.getItemCount(); i++) {
             Color tempColor = Color.decode(colors[i][1]);
             backMe.getItem(i).addActionListener((ActionEvent event) -> {
@@ -130,6 +157,8 @@ public class SimpleEditor extends JFrame {
             });
         }
 
+        // Foreground
+        // adding buttons for colors with icons (custom class roundIcon)
         for (String[] str: colors) {
             foreMe.add(new JMenuItem(str[0], new roundIcon(Color.decode(str[1]))));
         }
@@ -137,6 +166,7 @@ public class SimpleEditor extends JFrame {
 //            foreMe.add(new JMenuItem(str[0]));
 //        }
 
+        // adding action listener for above
         for (int i = 0; i < foreMe.getItemCount(); i++) {
             Color tempColor = Color.decode(colors[i][1]);
             foreMe.getItem(i).addActionListener((ActionEvent event) -> {
@@ -146,6 +176,7 @@ public class SimpleEditor extends JFrame {
             });
         }
 
+        // putting all together
         fileMe.add(openMi);
         fileMe.add(saveMi);
         fileMe.add(saveasMi);
@@ -162,15 +193,16 @@ public class SimpleEditor extends JFrame {
         menuBar.add(editMe);
         menuBar.add(optionsMe);
         setJMenuBar(menuBar);
-
         add(spane);
 
+        // basic window settings (overwritten setTitle)
         setTitle("Bez tytułu");
         setSize(720,500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
+    // method for inserting text with adress
     private JMenuItem insertText(JMenuItem item, String string, JTextPane pane) {
         item.addActionListener((ActionEvent event) -> {
             try {
@@ -183,11 +215,13 @@ public class SimpleEditor extends JFrame {
     }
 
 
+    // custom setTitle
     @Override
     public void setTitle(String title) {
         super.setTitle("Prosty edytor - " + title);
     }
 
+    // psvm with thread synchronisation
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             SimpleEditor se = new SimpleEditor();
@@ -195,6 +229,7 @@ public class SimpleEditor extends JFrame {
         });
     }
 
+    // custom class for creating round icons
     public class roundIcon implements Icon {
         private Color color;
 
@@ -222,6 +257,7 @@ public class SimpleEditor extends JFrame {
         }
     }
 
+    // JmenuItem with mnemonic
     public class JMenuItemNew extends JMenuItem {
         public JMenuItemNew(String text, int mnemonic, KeyStroke accelerator) {
             super(text, mnemonic);
@@ -229,6 +265,7 @@ public class SimpleEditor extends JFrame {
         }
     }
 
+    // Jmenu with mnemonic
     public class JMenuNew extends JMenu {
         public JMenuNew(String s, int mnemonic) {
             super(s);
