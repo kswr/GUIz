@@ -79,11 +79,11 @@ public class TestSimpleLayouts extends JFrame {
                     break;
             }
 
-        panel.add(button1);
-        panel.add(button2);
-        panel.add(button3);
-        panel.add(button4);
-        panel.add(button5);
+        panel.add(button1, BorderLayout.PAGE_START);
+        panel.add(button2, BorderLayout.LINE_START);
+        panel.add(button3, BorderLayout.CENTER);
+        panel.add(button4, BorderLayout.LINE_END);
+        panel.add(button5, BorderLayout.PAGE_END);
         add(panel);
 
         setTitle("Zadanie 15");
