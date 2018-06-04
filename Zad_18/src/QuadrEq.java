@@ -47,7 +47,7 @@ public class QuadrEq extends JFrame {
                 label.setBackground(Color.RED);
                 label.setForeground(Color.BLACK);
                 label.setText("Number format error");
-            } else if (Double.valueOf(string1) == 0 | Double.valueOf(string2) == 0 | Double.valueOf(string3) == 0) {
+            } else if (Double.valueOf(string1) == 0) {
                 label.setBackground(Color.RED);
                 label.setForeground(Color.BLACK);
                 label.setText("Not a quadratic equation");
@@ -79,7 +79,6 @@ public class QuadrEq extends JFrame {
         label.setHorizontalAlignment(0);
         label.setOpaque(true);
         label.setBackground(Color.WHITE);
-        label.setText("Whatever");
 
         setTitle("Quadratic Equation");
         setSize(360, 250);
@@ -98,8 +97,8 @@ public class QuadrEq extends JFrame {
 
     public static String solveEquation(double a, double b, double c) {
         String solution = "";
-        double x1 = ((-b + sqrt(pow(b,2)-4*(a*c)))/2*a);
-        double x2 = ((-b - sqrt(pow(b,2)-4*(a*c)))/2*a);
+        double x1 = ((-b + sqrt(pow(b,2)-4*(a*c)))/(2*a));
+        double x2 = ((-b - sqrt(pow(b,2)-4*(a*c)))/(2*a));
         if (Double.isNaN(x1) & Double.isNaN(x2)) {
             solution = "No solution";
         } else if (Double.isNaN(x1)) {
