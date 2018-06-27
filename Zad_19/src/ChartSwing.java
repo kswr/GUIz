@@ -165,6 +165,8 @@ public class ChartSwing {
                                 *factor*factor_grid));
             }
 
+            //
+
             // drawing axis
             g.setColor(Color.BLUE);
             g.drawLine(0,(int)(getHeight()*((double)Math.abs(d)/(double)height)),getWidth(),(int)(getHeight()*((double)Math.abs(d)/(double)height)));
