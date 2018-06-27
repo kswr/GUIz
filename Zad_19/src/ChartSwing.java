@@ -109,6 +109,9 @@ public class ChartSwing {
             // calculating factors
             double factor = (double)getHeight()/(double)getWidth();
             double factor_grid = (float)width/(float)height;
+            double width_factor = (double)getWidth()/width;
+            double width_factor1 = Math.pow((double)getWidth(),2)/width;
+            double width_factor2 = getWidth()/Math.pow(width,2);
 //            double q_factor_grid = Math.pow((float)width,2)/Math.pow((float)height,2);
 
             // assigning objects to reference variables
@@ -117,10 +120,13 @@ public class ChartSwing {
             p2 = new Polygon();
 
             // debugging prints
-            System.out.println(x_centre);
-            System.out.println(y_centre);
-            System.out.println(factor);
-            System.out.println(factor_grid);
+            System.out.println("X centre: " + x_centre);
+            System.out.println("Y centre: " + y_centre);
+            System.out.println("pix height/pix width: " + factor);
+            System.out.println("grid width/grid height: " + factor_grid);
+            System.out.println("pix width/grid width: " + width_factor);
+            System.out.println(width_factor1);
+            System.out.println(width_factor2);
 
             // historical
 //            for (int i = 0 - getWidth()/2; i < getWidth(); i++) {
@@ -135,18 +141,18 @@ public class ChartSwing {
                 p2.addPoint((x_centre + i), (int)(y_centre - Math.abs(i)*factor*factor_grid));
             }
 
-            // let's try another function
+            // let's try to the power of 3
             for (int i = 0 - getWidth(); i< getWidth(); i++) {
                 p1.addPoint((x_centre + i), (int)(y_centre -
-                        Math.pow(i,2)
-                                *Math.pow(factor*factor_grid,2)));
+                        Math.pow(Math.abs(i),3)/width_factor1*width
+                                *factor*factor_grid));
             }
 
             // does not work, let's try this
             // WORKS FOR QUADRATIC FUNCTION
             for (int i = 0 - getWidth(); i < getWidth(); i++) {
                 p.addPoint((x_centre + i), (int)(y_centre -
-                        Math.pow(i,2)/((double)getWidth()/width)
+                        Math.pow(i,2)/(width_factor)
                         *factor*factor_grid));
             }
 
@@ -158,7 +164,7 @@ public class ChartSwing {
             // drawing chart
             g.setColor(Color.BLACK);
             g.drawPolyline(p.xpoints,p.ypoints,p.npoints);
-//            g.drawPolyline(p1.xpoints,p1.ypoints,p1.npoints);
+            g.drawPolyline(p1.xpoints,p1.ypoints,p1.npoints);
             g.drawPolyline(p2.xpoints,p2.ypoints,p2.npoints);
         }
     }
