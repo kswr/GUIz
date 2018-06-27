@@ -22,6 +22,7 @@ public class ChartSwing {
     private Polygon p;
     private Polygon p1;
     private Polygon p2;
+    private Polygon p3;
 
     public static void main(String[] args) {
         ChartSwing gui = new ChartSwing();
@@ -110,14 +111,15 @@ public class ChartSwing {
             double factor = (double)getHeight()/(double)getWidth();
             double factor_grid = (float)width/(float)height;
             double width_factor = (double)getWidth()/width;
-            double width_factor1 = Math.pow((double)getWidth(),2)/width;
-            double width_factor2 = getWidth()/Math.pow(width,2);
+            double width_factor1 = Math.pow((double)getWidth(),2)/Math.pow(width,2);
+            double width_factor2 = Math.pow((double)getWidth(),3)/Math.pow(width,3);
 //            double q_factor_grid = Math.pow((float)width,2)/Math.pow((float)height,2);
 
             // assigning objects to reference variables
             p = new Polygon();
             p1 = new Polygon();
             p2 = new Polygon();
+            p3 = new Polygon();
 
             // debugging prints
             System.out.println("X centre: " + x_centre);
@@ -144,7 +146,7 @@ public class ChartSwing {
             // let's try to the power of 3
             for (int i = 0 - getWidth(); i< getWidth(); i++) {
                 p1.addPoint((x_centre + i), (int)(y_centre -
-                        Math.pow(Math.abs(i),3)/width_factor1*width
+                        (Math.pow(Math.abs(i),3)/width_factor1)
                                 *factor*factor_grid));
             }
 
@@ -154,6 +156,13 @@ public class ChartSwing {
                 p.addPoint((x_centre + i), (int)(y_centre -
                         Math.pow(i,2)/(width_factor)
                         *factor*factor_grid));
+            }
+
+            // power of 4
+            for (int i = 0 - getWidth(); i < getWidth(); i++) {
+                p3.addPoint((x_centre + i), (int)(y_centre -
+                        (Math.pow(Math.abs(i),4)/width_factor2)
+                                *factor*factor_grid));
             }
 
             // drawing axis
@@ -166,6 +175,7 @@ public class ChartSwing {
             g.drawPolyline(p.xpoints,p.ypoints,p.npoints);
             g.drawPolyline(p1.xpoints,p1.ypoints,p1.npoints);
             g.drawPolyline(p2.xpoints,p2.ypoints,p2.npoints);
+            g.drawPolyline(p3.xpoints,p3.ypoints,p3.npoints);
         }
     }
 
