@@ -8,12 +8,32 @@ import java.awt.event.FocusListener;
 
 public class ChartSwing {
 
+    private int[][] poly;
+    private int[][] poly_test_1 = {{3,2},{2,1},{3,0}};
+    private int[][] poly_test_2 = {{4,3},{-2,2},{1,1},{-1,0}};
+    private int width;
+    private int height;
+    private int x_centre;
+    private int y_centre;
+    double factor;
+    double factor_grid;
+    double width_factor;
+    double width_factor1;
+    double width_factor2;
+    double width_factor_modifable;
+
+
     private JTextField jTextField0;
     private JTextField jTextField1;
     private JTextField jTextField2;
     private JTextField jTextField3;
     private JTextField jTextField4;
     private JTextField jTextField5;
+    private JTextField jTextField6;
+    private JTextField jTextField7;
+    private JTextField jTextField8;
+
+
     private MyPanel myPanel;
     private int a = -10;
     private int b = 10;
@@ -23,6 +43,11 @@ public class ChartSwing {
     private Polygon p1;
     private Polygon p2;
     private Polygon p3;
+    private Polygon p4;
+
+    private int multi = 1;
+    private int power = 1;
+//    private int
 
     public static void main(String[] args) {
         ChartSwing gui = new ChartSwing();
@@ -40,19 +65,27 @@ public class ChartSwing {
         jTextField0 = new JTextField();
         jTextField0.setText(String.valueOf(a));
         jTextField0.addFocusListener(new ActListA());
+
         jTextField1 = new JTextField();
         jTextField1.setText(String.valueOf(b));
         jTextField1.addFocusListener(new ActListB());
+
         jTextField2 = new JTextField();
         jTextField2.setText(String.valueOf(c));
         jTextField2.addFocusListener(new ActListC());
+
         jTextField3 = new JTextField();
         jTextField3.setText(String.valueOf(d));
         jTextField3.addFocusListener(new ActListD());
+
         jTextField4 = new JTextField();
-        jTextField4.setText("a^2");
+        jTextField4.setText(String.valueOf(power));
         jTextField4.addFocusListener(new ActListE());
+
         jTextField5 = new JTextField();
+        jTextField5.setText("1");
+//        jTextField5.addFocusListener(new ActLIstF());
+
         myPanel = new MyPanel();
 
         // creating layout managers
@@ -92,10 +125,10 @@ public class ChartSwing {
             super.paintComponent(g);
 
             // getting data about drawing area
-            int width = Math.abs(a) + b;
-            int height = Math.abs(c) + d;
-            int x_centre = (int) (getWidth()*(Math.abs(a)/(double)width));
-            int y_centre = (int) (getHeight()*(d/(double)height));
+            width = Math.abs(a) + b;
+            height = Math.abs(c) + d;
+            x_centre = (int) (getWidth()*(Math.abs(a)/(double)width));
+            y_centre = (int) (getHeight()*(d/(double)height));
 
             // adding grid
             g.setColor(Color.GRAY);
@@ -108,18 +141,22 @@ public class ChartSwing {
             }
 
             // calculating factors
-            double factor = (double)getHeight()/(double)getWidth();
-            double factor_grid = (float)width/(float)height;
-            double width_factor = (double)getWidth()/width;
-            double width_factor1 = Math.pow((double)getWidth(),2)/Math.pow(width,2);
-            double width_factor2 = Math.pow((double)getWidth(),3)/Math.pow(width,3);
-//            double q_factor_grid = Math.pow((float)width,2)/Math.pow((float)height,2);
+            factor = (double)getHeight()/(double)getWidth();
+            factor_grid = (float)width/(float)height;
+            width_factor = (double)getWidth()/width;
+            width_factor1 = Math.pow((double)getWidth(),2)/Math.pow(width,2);
+            width_factor2 = Math.pow((double)getWidth(),3)/Math.pow(width,3);
+            width_factor_modifable = Math.pow((double)getWidth(),power-1)/Math.pow(width,power-1);
+
+            // select poly equation for testing
+            poly = poly_test_1;
 
             // assigning objects to reference variables
             p = new Polygon();
             p1 = new Polygon();
             p2 = new Polygon();
             p3 = new Polygon();
+            p4 = new Polygon();
 
             // debugging prints
             System.out.println("X centre: " + x_centre);
@@ -165,7 +202,14 @@ public class ChartSwing {
                                 *factor*factor_grid));
             }
 
-            //
+            // able to modify on the fly this one
+            for (int i = 0 - getWidth(); i < getWidth(); i++) {
+                p4.addPoint((x_centre + i), (int)(y_centre -
+                        (Math.pow(i,power)/width_factor_modifable)
+                                *factor*factor_grid));
+            }
+
+            // multi
 
             // drawing axis
             g.setColor(Color.BLUE);
@@ -174,10 +218,16 @@ public class ChartSwing {
 
             // drawing chart
             g.setColor(Color.BLACK);
-            g.drawPolyline(p.xpoints,p.ypoints,p.npoints);
-            g.drawPolyline(p1.xpoints,p1.ypoints,p1.npoints);
-            g.drawPolyline(p2.xpoints,p2.ypoints,p2.npoints);
-            g.drawPolyline(p3.xpoints,p3.ypoints,p3.npoints);
+//            g.drawPolyline(p.xpoints,p.ypoints,p.npoints);
+//            g.drawPolyline(p1.xpoints,p1.ypoints,p1.npoints);
+//            g.drawPolyline(p2.xpoints,p2.ypoints,p2.npoints);
+//            g.drawPolyline(p3.xpoints,p3.ypoints,p3.npoints);
+            g.drawPolyline(p4.xpoints,p4.ypoints,p4.npoints);
+
+        }
+
+        void polygonPoints(Polygon p, int[][] poly) {
+            p.addPoint((width),1);
         }
     }
 
@@ -189,7 +239,8 @@ public class ChartSwing {
 
         @Override
         public void focusLost(FocusEvent e) {
-            a = Integer.parseInt(jTextField0.getText());
+            a = -Math.abs(Integer.parseInt(jTextField0.getText()));
+            jTextField0.setText(String.valueOf(a));
             myPanel.repaint();
         }
     }
@@ -202,7 +253,8 @@ public class ChartSwing {
 
         @Override
         public void focusLost(FocusEvent e) {
-            b = Integer.parseInt(jTextField1.getText());
+            b = Math.abs(Integer.parseInt(jTextField1.getText()));
+            jTextField1.setText(String.valueOf(b));
             myPanel.repaint();
         }
     }
@@ -215,7 +267,8 @@ public class ChartSwing {
 
         @Override
         public void focusLost(FocusEvent e) {
-            c = Integer.parseInt(jTextField2.getText());
+            c = -Math.abs(Integer.parseInt(jTextField2.getText()));
+            jTextField2.setText(String.valueOf(c));
             myPanel.repaint();
         }
     }
@@ -228,7 +281,8 @@ public class ChartSwing {
 
         @Override
         public void focusLost(FocusEvent e) {
-            d = Integer.parseInt(jTextField3.getText());
+            d = Math.abs(Integer.parseInt(jTextField3.getText()));
+            jTextField3.setText(String.valueOf(d));
             myPanel.repaint();
         }
     }
@@ -241,6 +295,7 @@ public class ChartSwing {
 
         @Override
         public void focusLost(FocusEvent e) {
+            power = Integer.parseInt(jTextField4.getText());
             myPanel.repaint();
         }
     }
